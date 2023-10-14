@@ -14,6 +14,10 @@ from pyspark.sql.functions import *
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 
 #defining schema for the df
 
@@ -31,7 +35,7 @@ lap_times_schema = StructType(fields = [
 
 #reading the files
 #reads multiple lines by * wildcard
-lap_times_df = spark.read.schema(lap_times_schema).csv('/mnt/udemystrg/raw/raw/lap_times/lap_times_split*.csv')
+lap_times_df = spark.read.schema(lap_times_schema).csv(f'{raw_path}/lap_times/lap_times_split*.csv')
 
 # COMMAND ----------
 
@@ -51,7 +55,7 @@ lap_times_processed_df = lap_times_df.withColumnRenamed('raceId', 'race_id') \
 
 # COMMAND ----------
 
-lap_times_processed_df.write.mode('overwrite').parquet('/mnt/udemystrg/processed/lap_times')
+lap_times_processed_df.write.mode('overwrite').parquet(f'{processed_path}/lap_times')
 
 # COMMAND ----------
 

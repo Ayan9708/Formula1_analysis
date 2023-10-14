@@ -9,6 +9,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 
@@ -35,7 +39,7 @@ qualifying_schema = StructType(fields = [
 
 #reading the files
 #reads multiple lines by * wildcard
-qualifying_df = spark.read.schema(qualifying_schema).option('multiline', True).json('/mnt/udemystrg/raw/raw/qualifying/qualifying_split*.json')
+qualifying_df = spark.read.schema(qualifying_schema).option('multiline', True).json(f'{raw_path}/qualifying/qualifying_split*.json')
 
 # COMMAND ----------
 
@@ -57,7 +61,7 @@ qualifying_processed_df = qualifying_df.withColumnRenamed('raceId', 'race_id') \
 
 # COMMAND ----------
 
-qualifying_processed_df.write.mode('overwrite').parquet('/mnt/udemystrg/processed/qualifying')
+qualifying_processed_df.write.mode('overwrite').parquet(f'{processed_path}/qualifying')
 
 # COMMAND ----------
 

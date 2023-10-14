@@ -9,9 +9,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
+# MAGIC %run "../set_up/common_functions"
+
+# COMMAND ----------
+
 #importing the datatypes
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType
-from pyspark.sql.functions import current_timestamp
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import col
 
@@ -39,7 +46,7 @@ circuits_schema = StructType(fields = [StructField("circuitId", IntegerType(), n
 circuits_df = spark.read \
     .option("header", True) \
     .schema(circuits_schema) \
-    .csv("/mnt/udemystrg/raw/raw/circuits.csv")
+    .csv(f"{raw_path}/circuits.csv")
 
 # COMMAND ----------
 
@@ -88,7 +95,7 @@ circuits_final_df = circuits_renamed_df.withColumn("ingestion_date", current_tim
 
 #current_timestamp returns column object
 #lit() helps to fill literal values in a column
-circuits_final_df = circuits_renamed_df.withColumn("ingestion_date", current_timestamp())
+circuits_final_df = add_ingestion(circuits_renamed_df)
 #display(circuits_final_df)
 
 # COMMAND ----------
@@ -98,9 +105,13 @@ circuits_final_df = circuits_renamed_df.withColumn("ingestion_date", current_tim
 
 # COMMAND ----------
 
-circuits_final_df.write.mode("overwrite").parquet("/mnt/udemystrg/processed/circuits")
+circuits_final_df.write.mode("overwrite").parquet(f"{processed_path}/circuits")
 
 # COMMAND ----------
 
-df = spark.read.parquet("/mnt/udemystrg/processed/circuits")
-#display(df)
+df = spark.read.parquet(f"{processed_path}/circuits")
+display(df)
+
+# COMMAND ----------
+
+

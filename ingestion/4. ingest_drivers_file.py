@@ -4,6 +4,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
@@ -36,7 +40,7 @@ drivers_schema = StructType(fields= [ StructField("driverId", IntegerType(), Fal
 # COMMAND ----------
 
 #reading the file
-drivers_df = spark.read.schema(drivers_schema).json('/mnt/udemystrg/raw/raw/drivers.json')
+drivers_df = spark.read.schema(drivers_schema).json(f'{raw_path}/drivers.json')
 
 
 # COMMAND ----------
@@ -69,4 +73,4 @@ drivers_final_df = drivers_renamed_df.drop('url')
 
 # COMMAND ----------
 
-drivers_final_df.write.mode('overwrite').parquet('/mnt/udemystrg/processed/drivers')
+drivers_final_df.write.mode('overwrite').parquet(f'{processed_path}/drivers')

@@ -4,6 +4,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
@@ -37,7 +41,7 @@ results_schema = StructType(fields= [
 
 #reading the data
 
-results_df = spark.read.schema(results_schema).json('/mnt/udemystrg/raw/raw/results.json')
+results_df = spark.read.schema(results_schema).json(f'{raw_path}/results.json')
 
 # COMMAND ----------
 
@@ -69,7 +73,7 @@ results_processed_df = results_df.withColumnRenamed('resultId', 'result_id') \
 
 # COMMAND ----------
 
-results_processed_df.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/udemystrg/processed/results')
+results_processed_df.write.mode('overwrite').partitionBy('race_id').parquet(f'{processed_path}/results')
 
 # COMMAND ----------
 

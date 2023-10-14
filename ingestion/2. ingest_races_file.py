@@ -1,9 +1,16 @@
 # Databricks notebook source
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
+# MAGIC %run "../set_up/common_functions"
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col
 from pyspark.sql.functions import to_timestamp
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import concat
-from pyspark.sql.functions import current_timestamp
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 # COMMAND ----------
@@ -28,7 +35,7 @@ races_schema = StructType(fields= [ StructField("raceId", IntegerType(), False),
 
 races_df = spark.read.option("header", True) \
 .schema(races_schema) \
-.csv("/mnt/udemystrg/raw/raw/races.csv")
+.csv(f"{raw_path}/races.csv")
 races_df_select = races_df.select(col("raceId"), col("year"), col("round"), col("circuitId"), col("name"), col("date"), col("time"))
 
 
@@ -47,7 +54,7 @@ races_df_renamed = races_df_select.withColumnRenamed("raceId", "race_id") \
 
 # COMMAND ----------
 
-races_with_timestamp_df = races_df_renamed.withColumn("ingestion_date", current_timestamp()) \
+races_with_timestamp_df = add_ingestion(races_df_renamed) \
                             .withColumn("race_timestamp", to_timestamp(concat(col('date'), lit(' '), col('time')), 'yyyy-MM-dd HH:mm:ss'))
 
 # COMMAND ----------
@@ -57,7 +64,7 @@ races_with_timestamp_df = races_df_renamed.withColumn("ingestion_date", current_
 
 # COMMAND ----------
 
-races_with_timestamp_df.write.mode("overwrite").partitionBy('race_year').parquet('/mnt/udemystrg/processed/races')
+races_with_timestamp_df.write.mode("overwrite").partitionBy('race_year').parquet(f'{processed_path}/races')
 
 # COMMAND ----------
 

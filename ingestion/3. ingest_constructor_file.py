@@ -4,6 +4,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ###Requirements
 # MAGIC ###### 1. Read the json file
@@ -26,7 +30,7 @@ constructors_schema = "constructorId INT, constructorRef STRING, name STRING, na
 
 constructors_df = spark.read \
     .schema(constructors_schema) \
-    .json('/mnt/udemystrg/raw/raw/constructors.json')
+    .json(f'{raw_path}/constructors.json')
 
 # COMMAND ----------
 
@@ -55,4 +59,4 @@ display(constructors_final_df)
 
 # COMMAND ----------
 
-constructors_final_df.write.mode('overwrite').parquet('/mnt/udemystrg/processed/constructors')
+constructors_final_df.write.mode('overwrite').parquet(f'{processed_path}/constructors')

@@ -9,6 +9,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../set_up/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 
@@ -31,7 +35,7 @@ pit_stops_schema = StructType(fields = [
 # COMMAND ----------
 
 #reading multiline json file
-pit_stops_df = spark.read.schema(pit_stops_schema).option('multiline', True).json('/mnt/udemystrg/raw/raw/pit_stops.json')
+pit_stops_df = spark.read.schema(pit_stops_schema).option('multiline', True).json(f'{raw_path}/pit_stops.json')
 
 # COMMAND ----------
 
@@ -51,4 +55,4 @@ pit_stops_processed_df = pit_stops_df.withColumnRenamed('raceId', 'race_id') \
 
 # COMMAND ----------
 
-pit_stops_processed_df.write.mode('overwrite').parquet('/mnt/udemystrg/processed/pit_stops')
+pit_stops_processed_df.write.mode('overwrite').parquet(f'{processed_path}/pit_stops')
