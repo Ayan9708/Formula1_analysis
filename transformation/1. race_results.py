@@ -41,7 +41,7 @@ results_df = spark.read.parquet(f'{processed_path}/results') \
 race_results_df = results_df.join(races_df, results_df.race_id == races_df.race_id, 'inner') \
                     .join(drivers_df, results_df.driver_id == drivers_df.driver_id, 'inner') \
                     .join(constructors_df, constructors_df.constructor_id == results_df.constructor_id, 'inner') \
-                    .select('drivers_name','drivers_number', 'drivers_nationality', 'race_name', 'race_year', 'team', 'grid', 'fastest_lap', 'race_time', 'points', 'circuit_id') \
+                    .select('drivers_name','drivers_number', 'drivers_nationality', 'race_name', 'race_year', 'team', 'grid', 'fastest_lap', 'race_time', 'points', 'circuit_id', 'position') \
                     .withColumn('created', current_timestamp())
 
 # COMMAND ----------
